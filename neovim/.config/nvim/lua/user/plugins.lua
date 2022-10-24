@@ -57,7 +57,7 @@ return packer.startup(function(use)
   use "chriskempson/vim-tomorrow-theme"
 
 -- cmp plugins
-  use "hrsh7th/nvim-cmp"                -- the completion plugin
+  use "hrsh7th/nvim-cmp"               -- the completion plugin
   use "hrsh7th/cmp-buffer"             -- buffer completions
   use "hrsh7th/cmp-path"               -- path completions
   use "hrsh7th/cmp-cmdline"            -- cmdline completions
@@ -69,6 +69,9 @@ return packer.startup(function(use)
   use "delphinus/cmp-ctags"
   use "hrsh7th/cmp-nvim-lua"            -- Neovim's Lua API
   --use "ray-x/cmp-treesitter"
+
+-- telescope plugins
+
 
 -- LSP pligins
 use "neovim/nvim-lspconfig"

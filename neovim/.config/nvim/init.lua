@@ -8,6 +8,7 @@ require('user.keymaps')                       -- keymaps, leader-functions
 require('user.colorscheme')                   -- set colorscheme
 require('user.autocompletion')                -- currently using cmp
 require('user.lsp')
+require('user.telescope')
 
 -- Autocommand that reloads neovim whenever you save the plugins.lua file
 -- -- Adding my own bits to try and do the same for all config files
