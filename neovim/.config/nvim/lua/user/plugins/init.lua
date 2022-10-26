@@ -3,12 +3,18 @@
 vim.cmd [[
   augroup plugins_user_config
     autocmd!
-    autocmd BufWritePost ~/.config/nvim/lua/user/plugins.lua source ~/.config/nvim/lua/user/plugins.lua | PackerSync
+    autocmd BufWritePost plugins.lua source <afile> | PackerSync
   augroup end
 ]]
 
 
 local fn = vim.fn
+
+-- convenience function for grabbing the config for each plugins
+-- in the plugins folder
+function get_setup(name)
+  return string.format('require("user/plugins/%s")', name)
+end
 
 -- Automatically install packer
 local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
@@ -32,9 +38,8 @@ if not status_ok then
   return
 end
 
--- Have packer use a popup window
 packer.init {
-  display = {
+  display = {                      -- Have packer use a popup window
     open_fn = function()
       return require("packer.util").float { border = "rounded" }
     end,
@@ -56,30 +61,60 @@ return packer.startup(function(use)
 -- Colorscheme
   use "chriskempson/vim-tomorrow-theme"
 
+  -- project.nvim - the new Rooter
+  use {
+    "ahmedkhalf/project.nvim",
+    config = function()
+      require("project_nvim").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "README.MD" },
+        -- Table of lsp clients to ignore by name
+        -- eg: { "efm", ... }
+        ignore_lsp = {},
+        -- show_hidden = true,     -- Default = false
+      }
+    end
+  }
+
 -- cmp plugins
-  use "hrsh7th/nvim-cmp"               -- the completion plugin
-  use "hrsh7th/cmp-buffer"             -- buffer completions
-  use "hrsh7th/cmp-path"               -- path completions
-  use "hrsh7th/cmp-cmdline"            -- cmdline completions
-  use "hrsh7th/cmp-nvim-lsp"
-  use "saadparwaiz1/cmp_luasnip"        -- snippet completions
-  use "petertriho/cmp-git"              -- git commits, issues, merge/pull requests, mentions, etc
-  use "tamago324/cmp-zsh"
-  use "andersevenrud/cmp-tmux"
-  use "delphinus/cmp-ctags"
-  use "hrsh7th/cmp-nvim-lua"            -- Neovim's Lua API
-  --use "ray-x/cmp-treesitter"
+  use({
+    "hrsh7th/nvim-cmp",
+    requires = {
+      { "hrsh7th/cmp-buffer" },
+      { "hrsh7th/cmp-path" },
+      { "hrsh7th/cmp-cmdline" },
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "saadparwaiz1/cmp_luasnip" },
+      { "petertriho/cmp-git" },
+      { "tamago324/cmp-zsh" },
+      { "andersevenrud/cmp-tmux" },
+      { "delphinus/cmp-ctags" },
+      { "hrsh7th/cmp-nvim-lua" },
+      --{ "ray-x/cmp-treesitter" },
+    },
+    config = get_setup("cmp"),
+  })
 
--- telescope plugins
-
+  use ({
+    "nvim-telescope/telescope.nvim",
+    module = 'telescope',
+    cmd = "Telescope",
+    requires = {
+      { "nvim-lua/plenary.nvim" },
+      --{ "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
+    },
+    config = get_setup("telescope"),
+  })
 
 -- LSP pligins
-use "neovim/nvim-lspconfig"
-use "williamboman/nvim-lsp-installer"
+  use "neovim/nvim-lspconfig"
+  use "williamboman/nvim-lsp-installer"
 
 -- snippits
   use "L3MON4D3/LuaSnip"                -- snippet engine
   use "rafamadriz/friendly-snippets"    -- a bunch of snippets to use
+
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

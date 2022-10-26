@@ -1,9 +1,7 @@
--- Autocommand that reloads neovim whenever you save the current file
--- -- I'm sure there's a better way to do this...
 vim.cmd [[
-  augroup autocompletion_user_config
-    autocmd!
-    autocmd BufWritePost ~/.config/nvim/lua/user/autocompletion.lua source ~/.config/nvim/lua/user/autocompletion.lua
+  augroup cmp_user_config
+  autocmd!
+  autocmd BufWritePost user/plugins/cmp.lua source <afile>
   augroup end
 ]]
 
@@ -12,20 +10,6 @@ if not cmp_status_ok then
   vim.notify("Failed to load cmp")
   return
 end
-
-local snip_status_ok, luasnip = pcall(require, "luasnip")
-if not snip_status_ok then
-  vim.notify("Failed to load luasnip")
-  return
-end
-
-require("luasnip/loaders/from_vscode").lazy_load()
-
-local check_backspace = function()
-  local col = vim.fn.col "." - 1
-  return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
-end
-
 
 --   פּ ﯟ   some other good icons
 local kind_icons = {
@@ -58,6 +42,14 @@ local kind_icons = {
 -- find more here: https://www.nerdfonts.com/cheat-sheet
 
 cmp.setup {
+  window = {
+    completion = {
+      border = "single",
+    },
+    documentation = {
+      border = "single",
+    },
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body) -- For `luasnip` users.
@@ -77,7 +69,13 @@ cmp.setup {
     },
     -- Accept currently selected item. If none selected, `select` first item.
     -- Set `select` to `false` to only confirm explicitly selected items.
-    ["<CR>"] = cmp.mapping.confirm { select = true },
+    ["<CR>"] = cmp.mapping( 
+      cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = true,
+      }),
+      { "i", "c" }
+      ),
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -107,8 +105,23 @@ cmp.setup {
       "s",
     }),
   },
+  completion = {
+    completeopt = "menu,menuone,noinsert",
+    keyword_length= 2,
+  },
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "nvim-lua" },
+    { name = "luasnip" },
+    { name = "buffer" },
+    { name = "path" },
+    { name = "git" },
+    { name = "tmux" },
+    { name = "zsh" },
+    { name = "ctags" },
+    --{ name = "treesitter" },
+  },
   formatting = {
-    fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
       -- Kind icons
       vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
@@ -123,26 +136,9 @@ cmp.setup {
       return vim_item
     end,
   },
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "nvim-lua" },
-    { name = "luasnip" },
-    { name = "buffer" },
-    { name = "path" },
-    { name = "git" },
-    { name = "tmux" },
-    { name = "zsh" },
-    { name = "ctags" },
-    --{ name = "treesitter" },
-  },
   confirm_opts = {
     behavior = cmp.ConfirmBehavior.Replace,
     select = false,
-  },
-  window = {
-    documentation = {
-      border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-    },
   },
   experimental = {
     ghost_text = false,

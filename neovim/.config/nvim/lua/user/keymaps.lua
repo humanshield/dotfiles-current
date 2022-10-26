@@ -38,6 +38,9 @@ vim.g.mapleader = " "
 keymap("n", "<leader>v", ":tabedit $MYVIMRC<CR>", opts)
 keymap("n", "<leader>w", ":write<CR>", opts)
 
+--After searching, pressing escape stops the highlight
+keymap("n", "<esc>", ":noh<cr>", { silent = true })
+
 -- Better window navigation
 keymap("n", "<C-h>", "<C-w>h", opts)
 keymap("n", "<C-j>", "<C-w>j", opts)
