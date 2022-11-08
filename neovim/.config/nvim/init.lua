@@ -3,11 +3,12 @@
 -- 2022 - re-creating configuration from scratch as I transfer over to a lua config
 
 -- Keep organized! import form sub-folders
-require('user.plugins')                       -- Working on updating so that this handles all plugins, including their configuration and instalation
+require('user.plugins.init')                       -- Working on updating so that this handles all plugins, including their configuration and instalation
 require('user.settings')                      -- Basic options go here
 require('user.keymaps')                       -- keymaps, leader-functions
 require('user.colorscheme')                   -- set colorscheme
 require('user.autocompletion')                -- currently using cmp
+--require("user.plugins.cmp")
 require('user.lsp')
 require('user.telescope')
 require('user.project')                       -- Project.nvim seems to be the new VimRooter

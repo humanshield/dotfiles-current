@@ -12,6 +12,9 @@ vim.cmd [[
   set path+=**
 ]]
 
+-- Don't automatically add comments on a newline
+vim.cmd [[ set formatoptions-=c formatoptions-=r formatoptions-=o ]]
+
 
 -- cmd('syntax on')
 --vim.api.nvim_command('filetype plugin indent on')
